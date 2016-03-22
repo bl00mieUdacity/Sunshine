@@ -1,4 +1,4 @@
-package com.example.android.sunshine.app;
+package com.example.android.sunshine.app.vo;
 
 public class Forecast {
     private String m_dateString;
