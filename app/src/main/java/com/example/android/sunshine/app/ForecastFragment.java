@@ -1,7 +1,11 @@
 package com.example.android.sunshine.app;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.format.Time;
@@ -17,7 +21,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.android.sunshine.app.vo.Forecast;
 import com.example.android.sunshine.app.vo.ForecastRequest;
 
 import org.json.JSONArray;
@@ -41,6 +44,7 @@ public class ForecastFragment extends Fragment {
 
     public ArrayAdapter<Forecast> m_forecastAdapter;
     private static final String LOG_TAG = "ForecastFragment";
+    protected Context m_context;
 
     public ForecastFragment() {
     }
@@ -66,6 +70,7 @@ public class ForecastFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
+        m_context = getContext();
         return rootView;
     }
 
@@ -74,6 +79,11 @@ public class ForecastFragment extends Fragment {
         inflater.inflate(R.menu.forecast_fragment, menu);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateForecast();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -81,15 +91,19 @@ public class ForecastFragment extends Fragment {
 
         if (id == R.id.action_refresh) {
             Toast.makeText(getContext(), "Refreshing forecast data.", Toast.LENGTH_SHORT).show();
-            FetchWeatherTask weatherTask = new FetchWeatherTask();
-            weatherTask.execute(new ForecastRequest("98001,USA","metric","json",7));
+            updateForecast();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-
+    private void updateForecast() {
+        FetchWeatherTask weatherTask = new FetchWeatherTask();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = prefs.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+        weatherTask.execute(new ForecastRequest(location,"metric","json",7));
+    }
 
     class FetchWeatherTask extends AsyncTask<ForecastRequest, Integer, List<Forecast>> {
 
@@ -207,6 +221,66 @@ public class ForecastFragment extends Fragment {
                 forecasts.add(forecast);
             }
             return forecasts;
+        }
+    }
+
+    class Forecast {
+        private String m_dateString;
+        private String m_description;
+        private double m_high;
+        private double m_low;
+
+        public String getDateString() {
+            return m_dateString;
+        }
+
+        public void setDateString(String dateString) {
+            m_dateString = dateString;
+        }
+
+        public String getDescription() {
+            return m_description;
+        }
+
+        public void setDescription(String description) {
+            m_description = description;
+        }
+
+        public double getHigh() {
+            return m_high;
+        }
+
+        public void setHigh(double high) {
+            m_high = high;
+        }
+
+        public double getLow() {
+            return m_low;
+        }
+
+        public void setLow(double low) {
+            m_low = low;
+        }
+
+        private String formatHighLows() {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(m_context);
+            String units = prefs.getString(getString(R.string.pref_units_key), getString(R.string.pref_units_default));
+
+            double high = m_high;
+            double low = m_low;
+
+            if ("imperial".equals(units)) {
+                high = high*1.8 + 32;
+                low = low*1.8 + 32;
+            }
+
+            long roundedHigh = Math.round(high);
+            long roundedLow = Math.round(low);
+            return roundedHigh + "/" + roundedLow;
+        }
+
+        public String toString() {
+            return m_dateString + " - " + m_description + " - " + formatHighLows();
         }
     }
 

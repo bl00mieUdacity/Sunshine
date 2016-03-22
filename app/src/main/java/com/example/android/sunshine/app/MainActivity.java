@@ -1,15 +1,22 @@
 package com.example.android.sunshine.app;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String LOG_TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +40,28 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            startActivity(new Intent(this, SettingsActivity.class));
         }
-
+        else if (id == R.id.action_map) {
+            Toast.makeText(this, "Mapping location", Toast.LENGTH_SHORT).show();
+            showPreferredLocationOnMap();
+        }
         return super.onOptionsItemSelected(item);
     }
+
+    private void showPreferredLocationOnMap() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String location = prefs.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+        Uri geoUri = Uri.parse("geo:0,0?q=" + Uri.encode(location));
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoUri);
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
+        }
+        else {
+            Log.d(LOG_TAG,"Could not resolve activity for " + location);
+        }
+    }
+
+
 }
