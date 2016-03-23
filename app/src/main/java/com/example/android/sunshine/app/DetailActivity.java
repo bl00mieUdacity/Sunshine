@@ -17,8 +17,6 @@ import android.widget.TextView;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private ShareActionProvider m_shareActionProvider;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +90,7 @@ public class DetailActivity extends AppCompatActivity {
                 Log.d(LOG_TAG, "Share Action Provider is null?");
             }
         }
-
+        @SuppressWarnings("deprecation")
         private Intent createShareForecastIntent() {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);

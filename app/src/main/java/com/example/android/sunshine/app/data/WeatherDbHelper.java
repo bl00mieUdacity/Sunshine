@@ -3,7 +3,6 @@ package com.example.android.sunshine.app.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.location.Location;
 
 import com.example.android.sunshine.app.data.WeatherContract.LocationEntry;
 import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
@@ -14,7 +13,7 @@ import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
 public class WeatherDbHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
 
     static final String DATABASE_NAME = "weather.db";
 
@@ -63,7 +62,6 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
                 LocationEntry.COLUMN_CITY_NAME + " TEXT NOT NULL, " +
                 LocationEntry.COLUMN_COORD_LAT + " REAL NOT NULL, " +
                 LocationEntry.COLUMN_COORD_LON + " REAL NOT NULL, " +
-                LocationEntry.COLUMN_ALTITUDE + " REAL, " +
                 LocationEntry.COLUMN_OWM_ID + " LONG NOT NULL" +
                 " );";
         sqLiteDatabase.execSQL(SQL_CREATE_LOCATION_TABLE);

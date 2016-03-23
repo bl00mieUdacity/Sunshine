@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="units">
-        <item>Metric</item>
-        <item>Imperial</item>
+        <item>@string/pref_units_metric</item>
+        <item>@string/pref_units_imperial</item>
     </string-array>
     <string-array name="units_values">
-        <item>metric</item>
-        <item>imperial</item>
+        <item>Metric</item>
+        <item>Imperial</item>
     </string-array>
 </resources>
