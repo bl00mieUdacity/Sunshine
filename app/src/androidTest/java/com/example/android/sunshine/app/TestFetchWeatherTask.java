@@ -22,12 +22,12 @@ public class TestFetchWeatherTask extends AndroidTestCase{
     public void testAddLocation() {
         // start from a clean state
         getContext().getContentResolver().delete(WeatherContract.LocationEntry.CONTENT_URI,
-                WeatherContract.LocationEntry.COLUMN_LOCATION_QUERY + " = ?",
+                WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ?",
                 new String[]{ADD_LOCATION_SETTING});
 
-        FetchWeatherTask fwt = new FetchWeatherTask(getContext(), null);
+        FetchWeatherTask fwt = new FetchWeatherTask(getContext());
         long locationId = fwt.addLocation(ADD_LOCATION_SETTING, ADD_LOCATION_CITY,
-                ADD_LOCATION_LAT, ADD_LOCATION_LON, ADD_LOCATION_OWM_ID);
+                ADD_LOCATION_LAT, ADD_LOCATION_LON);
 
         // does addLocation return a valid record ID?
         assertFalse("Error: addLocation returned an invalid ID on insert",
@@ -41,13 +41,12 @@ public class TestFetchWeatherTask extends AndroidTestCase{
                     WeatherContract.LocationEntry.CONTENT_URI,
                     new String[]{
                             WeatherContract.LocationEntry._ID,
-                            WeatherContract.LocationEntry.COLUMN_LOCATION_QUERY,
+                            WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING,
                             WeatherContract.LocationEntry.COLUMN_CITY_NAME,
                             WeatherContract.LocationEntry.COLUMN_COORD_LAT,
-                            WeatherContract.LocationEntry.COLUMN_COORD_LON,
-                            WeatherContract.LocationEntry.COLUMN_OWM_ID
+                            WeatherContract.LocationEntry.COLUMN_COORD_LONG
                     },
-                    WeatherContract.LocationEntry.COLUMN_LOCATION_QUERY + " = ?",
+                    WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ?",
                     new String[]{ADD_LOCATION_SETTING},
                     null);
 
@@ -75,14 +74,14 @@ public class TestFetchWeatherTask extends AndroidTestCase{
 
             // add the location again
             long newLocationId = fwt.addLocation(ADD_LOCATION_SETTING, ADD_LOCATION_CITY,
-                    ADD_LOCATION_LAT, ADD_LOCATION_LON, ADD_LOCATION_OWM_ID);
+                    ADD_LOCATION_LAT, ADD_LOCATION_LON);
 
             assertEquals("Error: inserting a location again should return the same ID",
                     locationId, newLocationId);
         }
         // reset our state back to normal
         getContext().getContentResolver().delete(WeatherContract.LocationEntry.CONTENT_URI,
-                WeatherContract.LocationEntry.COLUMN_LOCATION_QUERY + " = ?",
+                WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ?",
                 new String[]{ADD_LOCATION_SETTING});
 
         // clean up the test so that other tests can use the content provider
