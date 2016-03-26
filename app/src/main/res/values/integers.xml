@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="forecast_view_holder_tag">0</integer>
+</resources>
